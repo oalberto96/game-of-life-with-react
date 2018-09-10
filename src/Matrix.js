@@ -1,11 +1,13 @@
 import React from "react";
 import Cell from "./Cell";
+import "./style.css";
 
 class Matrix extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      matrix: this.generateMatrix()
+      matrix: this.generateMatrix(),
+      isAnyoneAlive: false
     };
   }
 
@@ -24,18 +26,21 @@ class Matrix extends React.Component {
     return matrix;
   }
 
-  componentDidMount() {
-    this.interval = setInterval(() => this.lifeMiracle(), 1000);
-  }
-
   cellReact(cellId) {
-    this.setState({
-      matrix: this.state.matrix.map(row =>
-        row.map(
-          cell => (cell.id === cellId ? { ...cell, alive: !cell.alive } : cell)
+    this.setState(
+      {
+        matrix: this.state.matrix.map(row =>
+          row.map(
+            cell =>
+              cell.id === cellId ? { ...cell, alive: !cell.alive } : cell
+          )
         )
-      )
-    });
+      },
+
+      () => {
+        this.timeout = setTimeout(() => this.lifeMiracle(), 1000);
+      }
+    );
   }
 
   generateIndexes(x, y, matrix) {
@@ -68,37 +73,54 @@ class Matrix extends React.Component {
     let matrixCopy = this.state.matrix.slice();
     let row = [];
     let neighbors = 0;
+    let anyAlive = false;
+    let cellOriginalState = false;
     for (let i = 0; i < matrixCopy.length; i++) {
       row = matrixCopy[i];
       for (let j = 0; j < row.length; j++) {
         neighbors = this.countNeighborsAlive(i, j, matrixCopy);
-        console.log(neighbors);
         if (neighbors < 2 || neighbors > 3) {
           matrixCopy[i][j].alive = false;
         } else if (neighbors === 3) {
           matrixCopy[i][j].alive = true;
         }
+        if (anyAlive !== true && matrixCopy[i][j].alive === true) {
+          anyAlive = true;
+        }
       }
     }
-    this.setState({ matrix: matrixCopy });
+    console.log(anyAlive);
+    this.setState({ matrix: matrixCopy }, () => {
+      if (anyAlive) {
+        this.timeout = setTimeout(() => this.lifeMiracle(), 1);
+      }
+    });
   }
 
   render() {
     var i = 0;
     return this.state.matrix.map(row => (
-      <div key={i++} style={{ display: "block", fontSize: "0" }}>
+      <div key={i++} className="Row">
         {row.map(cell => (
-          <Cell
-            key={cell.id}
-            alive={cell.alive}
-            onClick={() => {
-              clearInterval(this.interval);
-              this.cellReact(cell.id);
-              setTimeout(() => {
-                this.interval = setInterval(this.lifeMiracle(), 1000);
-              }, 3000);
+          <span
+            className="Cell"
+            style={{
+              backgroundColor: cell.alive && "#FF5456"
             }}
+            onClick={() => {
+              clearTimeout(this.timeout);
+              this.cellReact(cell.id);
+            }}
+            key={cell.id}
           />
+          // <Cell
+          //   key={cell.id}
+          //   alive={cell.alive}
+          //   onClick={() => {
+          //     clearTimeout(this.timeout);
+          //     this.cellReact(cell.id);
+          //   }}
+          // />
         ))}
       </div>
     ));

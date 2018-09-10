@@ -1,2 +1,10 @@
 .Cell {
+  border: 1px solid green;
+  padding: 5px;
+  display: inline-block;
+}
+
+.Row {
+  display: block;
+  font-size: 0;
 }
