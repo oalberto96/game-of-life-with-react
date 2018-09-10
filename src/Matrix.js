@@ -36,9 +36,10 @@ class Matrix extends React.Component {
           )
         )
       },
-
       () => {
-        this.timeout = setTimeout(() => this.lifeMiracle(), 1000);
+        this.timeout = setTimeout(() => {
+          this.lifeMiracle();
+        }, 1000);
       }
     );
   }
@@ -70,15 +71,21 @@ class Matrix extends React.Component {
   }
 
   lifeMiracle() {
-    let matrixCopy = this.state.matrix.slice();
+    var matrixCopy = this.state.matrix.map(row => {
+      return row.map(cell => {
+        return { ...cell };
+      });
+    });
     let row = [];
     let neighbors = 0;
     let anyAlive = false;
     let cellOriginalState = false;
-    for (let i = 0; i < matrixCopy.length; i++) {
+    for (let i = 0; i < this.state.matrix.length; i++) {
       row = matrixCopy[i];
       for (let j = 0; j < row.length; j++) {
-        neighbors = this.countNeighborsAlive(i, j, matrixCopy);
+        neighbors = this.countNeighborsAlive(i, j, this.state.matrix);
+        if (matrixCopy[i][j].alive === true) {
+        }
         if (neighbors < 2 || neighbors > 3) {
           matrixCopy[i][j].alive = false;
         } else if (neighbors === 3) {
@@ -89,10 +96,9 @@ class Matrix extends React.Component {
         }
       }
     }
-    console.log(anyAlive);
     this.setState({ matrix: matrixCopy }, () => {
       if (anyAlive) {
-        this.timeout = setTimeout(() => this.lifeMiracle(), 1);
+        this.timeout = setTimeout(() => this.lifeMiracle(), 200);
       }
     });
   }
@@ -102,25 +108,25 @@ class Matrix extends React.Component {
     return this.state.matrix.map(row => (
       <div key={i++} className="Row">
         {row.map(cell => (
-          <span
-            className="Cell"
-            style={{
-              backgroundColor: cell.alive && "#FF5456"
-            }}
-            onClick={() => {
-              clearTimeout(this.timeout);
-              this.cellReact(cell.id);
-            }}
-            key={cell.id}
-          />
-          // <Cell
-          //   key={cell.id}
-          //   alive={cell.alive}
+          // <span
+          //   className="Cell"
+          //   style={{
+          //     backgroundColor: cell.alive && "#FF5456"
+          //   }}
           //   onClick={() => {
           //     clearTimeout(this.timeout);
           //     this.cellReact(cell.id);
           //   }}
+          //   key={cell.id}
           // />
+          <Cell
+            key={cell.id}
+            alive={cell.alive}
+            onClick={() => {
+              clearTimeout(this.timeout);
+              this.cellReact(cell.id);
+            }}
+          />
         ))}
       </div>
     ));
