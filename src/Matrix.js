@@ -108,25 +108,25 @@ class Matrix extends React.Component {
     return this.state.matrix.map(row => (
       <div key={i++} className="Row">
         {row.map(cell => (
-          // <span
-          //   className="Cell"
-          //   style={{
-          //     backgroundColor: cell.alive && "#FF5456"
-          //   }}
-          //   onClick={() => {
-          //     clearTimeout(this.timeout);
-          //     this.cellReact(cell.id);
-          //   }}
-          //   key={cell.id}
-          // />
-          <Cell
-            key={cell.id}
-            alive={cell.alive}
+          <span
+            className="Cell"
+            style={{
+              backgroundColor: cell.alive && "#FF5456"
+            }}
             onClick={() => {
               clearTimeout(this.timeout);
               this.cellReact(cell.id);
             }}
+            key={cell.id}
           />
+          // <Cell
+          //   key={cell.id}
+          //   alive={cell.alive}
+          //   onClick={() => {
+          //     clearTimeout(this.timeout);
+          //     this.cellReact(cell.id);
+          //   }}
+          // />
         ))}
       </div>
     ));
