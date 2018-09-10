@@ -1,0 +1,1 @@
+{"version":3,"sources":["style.css"],"names":[],"mappings":"AAAA,MACE,uBACA,YACA,oBAAsB,CAGxB,KACE,cACA,WAAa","file":"static/css/main.8d61ca64.css","sourcesContent":[".Cell {\n  border: 1px solid green;\n  padding: 5px;\n  display: inline-block;\n}\n\n.Row {\n  display: block;\n  font-size: 0;\n}\n\n\n\n// WEBPACK FOOTER //\n// ./src/style.css"],"sourceRoot":""}
